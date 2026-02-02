@@ -1,0 +1,72 @@
+import React, { useState, useMemo } from 'react';
+import InputGroup from './InputGroup';
+import ResultCard from './ResultCard';
+
+export default function Calculator() {
+    // State
+    const [propertyCost, setPropertyCost] = useState(200000);
+    const [rehabCost, setRehabCost] = useState(50000);
+    const [interestRate, setInterestRate] = useState(6.75);
+    const [ltv, setLtv] = useState(75); // Loan to Value %
+    const [rentalIncome, setRentalIncome] = useState(2500);
+    const [taxes, setTaxes] = useState(3000); // Annual
+    const [insurance, setInsurance] = useState(1200); // Annual
+
+    // Calculations
+    const { dscr, monthlyPayment, netIncome, loanAmount, totalInvested } = useMemo(() => {
+        const totalCost = propertyCost + rehabCost;
+        const loanAmount = totalCost * (ltv / 100);
+        const downPayment = totalCost - loanAmount;
+        
+        // Mortgage PMT (Principal + Interest)
+        const r = interestRate / 100 / 12;
+        const n = 30 * 12; // 30 Years
+        
+        let pmt = 0;
+        if (interestRate > 0) {
+            pmt = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        } else {
+            pmt = loanAmount / n;
+        }
+
+        const monthlyTaxes = taxes / 12;
+        const monthlyInsurance = insurance / 12;
+        
+        const totalDebtService = pmt + monthlyTaxes + monthlyInsurance;
+        const netIncome = rentalIncome - totalDebtService;
+        const dscr = totalDebtService > 0 ? rentalIncome / totalDebtService : 0;
+
+        return {
+            dscr,
+            monthlyPayment: totalDebtService,
+            netIncome,
+            loanAmount,
+            totalInvested: downPayment // simplified, ignoring closing costs
+        };
+    }, [propertyCost, rehabCost, interestRate, ltv, rentalIncome, taxes, insurance]);
+
+    return (
+        <div style={{width: '100%'}}>
+            <ResultCard dscr={dscr} monthlyPayment={monthlyPayment} netIncome={netIncome} />
+            
+            <div className="card">
+                <h3>Loan Details</h3>
+                <InputGroup label="Property Cost" value={propertyCost} onChange={setPropertyCost} min={50000} max={1000000} step={5000} />
+                <InputGroup label="Rehab Cost" value={rehabCost} onChange={setRehabCost} min={0} max={200000} step={1000} />
+                <InputGroup label="Interest Rate (%)" value={interestRate} onChange={setInterestRate} min={3} max={12} step={0.125} prefix="" suffix="%" />
+                <InputGroup label="LTV (%)" value={ltv} onChange={setLtv} min={50} max={90} step={5} prefix="" suffix="%" />
+            </div>
+
+            <div className="card">
+                <h3>Income & Expenses</h3>
+                <InputGroup label="Monthly Rent" value={rentalIncome} onChange={setRentalIncome} min={500} max={10000} step={50} />
+                <InputGroup label="Annual Taxes" value={taxes} onChange={setTaxes} min={500} max={20000} step={100} />
+                <InputGroup label="Annual Insurance" value={insurance} onChange={setInsurance} min={300} max={5000} step={50} />
+            </div>
+            
+            <div style={{textAlign: 'center', opacity: 0.6, fontSize: '0.8rem', marginTop: '20px'}}>
+                Loan Amount: ${loanAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
+            </div>
+        </div>
+    );
+}

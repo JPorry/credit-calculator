@@ -1,0 +1,63 @@
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.value-display {
+    color: var(--text-main);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.slider {
+    flex: 1;
+    -webkit-appearance: none; 
+    appearance: none;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 4px;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(46, 160, 67, 0.5); 
+}
+
+.number-input {
+    width: 80px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.number-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
