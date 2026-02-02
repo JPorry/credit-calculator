@@ -8,39 +8,95 @@
     gap: 12px;
 }
 
+.dscr-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: -10px;
+}
+
 .dscr-value {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     line-height: 1;
     text-shadow: 0 0 20px rgba(0,0,0,0.5);
+    margin: 10px 0;
 }
 
 .badge {
     padding: 4px 12px;
     border-radius: 20px;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
+    align-self: flex-start;
 }
 
 .breakdown {
     width: 100%;
-    margin-top: 12px;
-    padding-top: 12px;
+    margin-top: 8px;
+    padding-top: 16px;
     border-top: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 }
 
-.breakdown-item {
+.breakdown-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.breakdown-row.income {
+    color: var(--text-main);
+}
+
+.breakdown-row.net-income {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.sub-breakdown {
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 2px solid var(--border-color);
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sub-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
-.breakdown-item span:last-child {
-    color: var(--text-main);
+.amount {
+    font-variant-numeric: tabular-nums;
     font-weight: 600;
+}
+
+.amount.positive {
+    color: var(--primary-color);
+}
+
+.amount.negative {
+    color: var(--error-color);
+}
+
+.expenses-total {
+    font-size: 0.95rem;
+}
+
+.expenses-total .amount {
+    color: var(--warning-color); /* Or keep it white/red? keeping warning for differentiation */
+    color: var(--text-main);
 }

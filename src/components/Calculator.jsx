@@ -13,7 +13,7 @@ export default function Calculator() {
     const [insurance, setInsurance] = useState(1200); // Annual
 
     // Calculations
-    const { dscr, monthlyPayment, netIncome, loanAmount, totalInvested } = useMemo(() => {
+    const calculations = useMemo(() => {
         const totalCost = propertyCost + rehabCost;
         const loanAmount = totalCost * (ltv / 100);
         const downPayment = totalCost - loanAmount;
@@ -38,34 +38,105 @@ export default function Calculator() {
 
         return {
             dscr,
-            monthlyPayment: totalDebtService,
+            totalDebtService,
             netIncome,
             loanAmount,
-            totalInvested: downPayment // simplified, ignoring closing costs
+            totalInvested: downPayment,
+            principalAndInterest: pmt,
+            monthlyTaxes,
+            monthlyInsurance
         };
     }, [propertyCost, rehabCost, interestRate, ltv, rentalIncome, taxes, insurance]);
 
     return (
         <div style={{width: '100%'}}>
-            <ResultCard dscr={dscr} monthlyPayment={monthlyPayment} netIncome={netIncome} />
+            <ResultCard 
+                dscr={calculations.dscr} 
+                rentalIncome={rentalIncome}
+                totalExpenses={calculations.totalDebtService}
+                netIncome={calculations.netIncome}
+                principalAndInterest={calculations.principalAndInterest}
+                monthlyTaxes={calculations.monthlyTaxes}
+                monthlyInsurance={calculations.monthlyInsurance}
+            />
             
             <div className="card">
                 <h3>Loan Details</h3>
-                <InputGroup label="Property Cost" value={propertyCost} onChange={setPropertyCost} min={50000} max={1000000} step={5000} />
-                <InputGroup label="Rehab Cost" value={rehabCost} onChange={setRehabCost} min={0} max={200000} step={1000} />
-                <InputGroup label="Interest Rate (%)" value={interestRate} onChange={setInterestRate} min={3} max={12} step={0.125} prefix="" suffix="%" />
-                <InputGroup label="LTV (%)" value={ltv} onChange={setLtv} min={50} max={90} step={5} prefix="" suffix="%" />
+                <InputGroup 
+                    label="Property Cost" 
+                    value={propertyCost} 
+                    onChange={setPropertyCost} 
+                    min={50000} 
+                    max={1000000} 
+                    step={5000} 
+                    description="The purchase price of the property."
+                />
+                <InputGroup 
+                    label="Rehab Cost" 
+                    value={rehabCost} 
+                    onChange={setRehabCost} 
+                    min={0} 
+                    max={200000} 
+                    step={1000} 
+                    description="Estimated cost of renovations and repairs needed."
+                />
+                <InputGroup 
+                    label="Interest Rate (%)" 
+                    value={interestRate} 
+                    onChange={setInterestRate} 
+                    min={3} 
+                    max={12} 
+                    step={0.125} 
+                    prefix="" 
+                    suffix="%" 
+                    description="Annual interest rate for the loan."
+                />
+                <InputGroup 
+                    label="LTV (%)" 
+                    value={ltv} 
+                    onChange={setLtv} 
+                    min={50} 
+                    max={90} 
+                    step={5} 
+                    prefix="" 
+                    suffix="%" 
+                    description="Loan-to-Value ratio. Percentage of the total value (Purchase + Rehab) the lender will finance."
+                />
             </div>
 
             <div className="card">
                 <h3>Income & Expenses</h3>
-                <InputGroup label="Monthly Rent" value={rentalIncome} onChange={setRentalIncome} min={500} max={10000} step={50} />
-                <InputGroup label="Annual Taxes" value={taxes} onChange={setTaxes} min={500} max={20000} step={100} />
-                <InputGroup label="Annual Insurance" value={insurance} onChange={setInsurance} min={300} max={5000} step={50} />
+                <InputGroup 
+                    label="Monthly Rent" 
+                    value={rentalIncome} 
+                    onChange={setRentalIncome} 
+                    min={500} 
+                    max={10000} 
+                    step={50} 
+                    description="Gross monthly rental income expected from the property."
+                />
+                <InputGroup 
+                    label="Annual Taxes" 
+                    value={taxes} 
+                    onChange={setTaxes} 
+                    min={500} 
+                    max={20000} 
+                    step={100} 
+                    description="Total property taxes for the year."
+                />
+                <InputGroup 
+                    label="Annual Insurance" 
+                    value={insurance} 
+                    onChange={setInsurance} 
+                    min={300} 
+                    max={5000} 
+                    step={50} 
+                    description="Total hazard insurance cost for the year."
+                />
             </div>
             
             <div style={{textAlign: 'center', opacity: 0.6, fontSize: '0.8rem', marginTop: '20px'}}>
-                Loan Amount: ${loanAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                Loan Amount: ${calculations.loanAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
             </div>
         </div>
     );
