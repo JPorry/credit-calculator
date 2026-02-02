@@ -2,88 +2,93 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     position: relative;
+    cursor: text; /* Suggests clicking anywhere focuses */
 }
 
-.label-row {
+.input-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
 }
 
 .label-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .info-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
-    background-color: var(--surface-color);
-    border: 1px solid var(--border-color);
+    width: 20px;
+    height: 20px;
+    /* rounded but subtle */
     border-radius: 50%;
-    font-size: 10px;
-    font-weight: bold;
     color: var(--primary-color);
-}
-
-.value-display {
-    color: var(--text-main);
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: serif; /* nice serfi 'i' */
+    background: rgba(46, 160, 67, 0.1); 
 }
 
 .input-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.slider {
-    flex: 1;
-    -webkit-appearance: none; 
-    appearance: none;
-    height: 6px;
-    background: var(--border-color);
-    border-radius: 4px;
-    outline: none;
-    transition: background 0.2s;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none; 
-    width: 20px;
-    height: 20px;
-    background: var(--primary-color);
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(46, 160, 67, 0.5); 
-}
-
-.number-input {
-    width: 80px;
-    background: var(--surface-color);
+    background-color: var(--surface-color);
     border: 1px solid var(--border-color);
-    color: var(--text-main);
-    border-radius: 6px;
-    padding: 6px;
-    font-size: 0.9rem;
-    text-align: right;
+    border-radius: var(--radius-lg);
+    padding: 12px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.number-input:focus {
+.input-row:focus-within {
     border-color: var(--primary-color);
-    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 160, 67, 0.2);
 }
 
-/* Modal Popup */
+.prefix, .suffix {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 1.2rem;
+    user-select: none;
+}
+
+.prefix {
+    margin-right: 4px;
+}
+
+.suffix {
+    margin-left: 4px;
+}
+
+.big-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.5rem; /* Prominent size */
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    font-family: var(--font-family);
+    -moz-appearance: textfield; /* Remove spinner */
+}
+
+.big-input::-webkit-outer-spin-button,
+.big-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.big-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.5;
+}
+
+/* Modal Popup - Reused from before */
 .info-popup {
     position: fixed;
     top: 0;
@@ -100,38 +105,17 @@
 }
 
 .info-content {
-    background-color: var(--surface-color);
+    background-color: var(--bg-color); /* darker bg for popup */
     border: 1px solid var(--border-color);
     padding: 24px;
     border-radius: var(--radius-lg);
     width: 80%;
-    max-width: 300px;
+    max-width: 320px;
     box-shadow: var(--shadow-lg);
     text-align: center;
 }
 
+/* Ensure text in modal is readable */
 .info-content p {
-    margin: 0 0 20px 0;
-    line-height: 1.5;
     color: var(--text-main);
-}
-
-.close-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.close-btn:hover {
-    background-color: var(--primary-hover);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
