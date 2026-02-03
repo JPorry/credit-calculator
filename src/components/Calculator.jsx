@@ -6,11 +6,15 @@ export default function Calculator() {
     // State
     const [propertyCost, setPropertyCost] = useState(200000);
     const [rehabCost, setRehabCost] = useState(50000);
+    const [arv, setArv] = useState(350000); // Default ARV
+    
     const [interestRate, setInterestRate] = useState(6.75);
     const [ltv, setLtv] = useState(75); // Loan to Value %
+    
     const [rentalIncome, setRentalIncome] = useState(2500);
     const [taxes, setTaxes] = useState(3000); // Annual
     const [insurance, setInsurance] = useState(1200); // Annual
+    const [extraExpenses, setExtraExpenses] = useState(0); // Monthly
 
     // Calculations
     const calculations = useMemo(() => {
@@ -32,7 +36,7 @@ export default function Calculator() {
         const monthlyTaxes = taxes / 12;
         const monthlyInsurance = insurance / 12;
         
-        const totalDebtService = pmt + monthlyTaxes + monthlyInsurance;
+        const totalDebtService = pmt + monthlyTaxes + monthlyInsurance + extraExpenses;
         const netIncome = rentalIncome - totalDebtService;
         const dscr = totalDebtService > 0 ? rentalIncome / totalDebtService : 0;
 
@@ -44,9 +48,10 @@ export default function Calculator() {
             totalInvested: downPayment,
             principalAndInterest: pmt,
             monthlyTaxes,
-            monthlyInsurance
+            monthlyInsurance,
+            extraExpenses
         };
-    }, [propertyCost, rehabCost, interestRate, ltv, rentalIncome, taxes, insurance]);
+    }, [propertyCost, rehabCost, arv, interestRate, ltv, rentalIncome, taxes, insurance, extraExpenses]);
 
     return (
         <div style={{width: '100%'}}>
@@ -58,10 +63,11 @@ export default function Calculator() {
                 principalAndInterest={calculations.principalAndInterest}
                 monthlyTaxes={calculations.monthlyTaxes}
                 monthlyInsurance={calculations.monthlyInsurance}
+                extraExpenses={calculations.extraExpenses}
             />
             
             <div className="card">
-                <h3>Loan Details</h3>
+                <h3>Property Details</h3>
                 <InputGroup 
                     label="Property Cost" 
                     value={propertyCost} 
@@ -80,6 +86,30 @@ export default function Calculator() {
                     step={1000} 
                     description="Estimated cost of renovations and repairs needed."
                 />
+            </div>
+
+            <div className="card">
+                <h3>Loan Details</h3>
+                <InputGroup 
+                    label="ARV (After Repair Value)" 
+                    value={arv} 
+                    onChange={setArv} 
+                    min={50000} 
+                    max={2000000} 
+                    step={5000} 
+                    description="Estimated value of the property after all renovations are completed."
+                />
+                <InputGroup 
+                    label="Loan % (LTV)" 
+                    value={ltv} 
+                    onChange={setLtv} 
+                    min={50} 
+                    max={90} 
+                    step={5} 
+                    prefix="" 
+                    suffix="%" 
+                    description="Loan-to-Value ratio. Percentage of the total cost (Purchase + Rehab) financed."
+                />
                 <InputGroup 
                     label="Interest Rate (%)" 
                     value={interestRate} 
@@ -91,17 +121,9 @@ export default function Calculator() {
                     suffix="%" 
                     description="Annual interest rate for the loan."
                 />
-                <InputGroup 
-                    label="LTV (%)" 
-                    value={ltv} 
-                    onChange={setLtv} 
-                    min={50} 
-                    max={90} 
-                    step={5} 
-                    prefix="" 
-                    suffix="%" 
-                    description="Loan-to-Value ratio. Percentage of the total value (Purchase + Rehab) the lender will finance."
-                />
+                 <div style={{textAlign: 'center', opacity: 0.6, fontSize: '0.8rem', marginTop: '10px', marginBottom: '10px'}}>
+                    Loan Amount: ${calculations.loanAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                </div>
             </div>
 
             <div className="card">
@@ -113,7 +135,7 @@ export default function Calculator() {
                     min={500} 
                     max={10000} 
                     step={50} 
-                    description="Gross monthly rental income expected from the property."
+                    description="Gross monthly rental income expected."
                 />
                 <InputGroup 
                     label="Annual Taxes" 
@@ -133,10 +155,15 @@ export default function Calculator() {
                     step={50} 
                     description="Total hazard insurance cost for the year."
                 />
-            </div>
-            
-            <div style={{textAlign: 'center', opacity: 0.6, fontSize: '0.8rem', marginTop: '20px'}}>
-                Loan Amount: ${calculations.loanAmount.toLocaleString(undefined, {maximumFractionDigits: 0})}
+                <InputGroup 
+                    label="Extra Expenses (Monthly)" 
+                    value={extraExpenses} 
+                    onChange={setExtraExpenses} 
+                    min={0} 
+                    max={5000} 
+                    step={50} 
+                    description="Any additional monthly costs (HOA, Management, etc)."
+                />
             </div>
         </div>
     );

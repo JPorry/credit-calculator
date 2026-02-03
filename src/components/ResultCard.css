@@ -1,87 +1,118 @@
 .result-card {
-    text-align: center;
-    border-width: 2px;
-    transition: border-color 0.3s ease;
+    background: linear-gradient(145deg, #1e2329, #0d1117);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 32px 24px;
+    margin-bottom: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: currentColor; /* Uses the border color (status color) */
+    opacity: 0.8;
 }
 
 .dscr-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
-    margin-bottom: -10px;
+    margin-bottom: 24px;
+}
+
+.dscr-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.8;
 }
 
 .dscr-value {
-    font-size: 3.5rem;
+    font-size: 4.5rem; /* Massive */
     font-weight: 800;
     line-height: 1;
-    text-shadow: 0 0 20px rgba(0,0,0,0.5);
-    margin: 10px 0;
+    margin: 0;
+    letter-spacing: -2px;
+    font-variant-numeric: tabular-nums;
+    filter: drop-shadow(0 0 15px rgba(0,0,0,0.3));
 }
 
-.badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.75rem;
+.dscr-status-badge {
+    margin-top: 12px;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 0.9rem;
     text-transform: uppercase;
-    align-self: flex-start;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .breakdown {
     width: 100%;
-    margin-top: 8px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .breakdown-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1rem;
-}
-
-.breakdown-row.income {
-    color: var(--text-main);
-}
-
-.breakdown-row.net-income {
-    margin-top: 8px;
-    padding-top: 12px;
-    border-top: 1px dashed var(--border-color);
-    font-weight: 700;
     font-size: 1.1rem;
 }
 
-.sub-breakdown {
-    margin-left: 12px;
-    padding-left: 12px;
-    border-left: 2px solid var(--border-color);
-    margin-top: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.sub-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
+.breakdown-row .label {
     color: var(--text-secondary);
+    font-weight: 500;
 }
 
-.amount {
-    font-variant-numeric: tabular-nums;
+.breakdown-row .amount {
     font-weight: 600;
+    font-family: var(--font-family);
+    font-variant-numeric: tabular-nums;
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--border-color);
+    width: 100%;
+    margin: 4px 0;
+    opacity: 0.5;
+}
+
+.net-income {
+    margin-top: 4px;
+}
+
+.net-income .label {
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.net-income .amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
 }
 
 .amount.positive {
@@ -90,13 +121,4 @@
 
 .amount.negative {
     color: var(--error-color);
-}
-
-.expenses-total {
-    font-size: 0.95rem;
-}
-
-.expenses-total .amount {
-    color: var(--warning-color); /* Or keep it white/red? keeping warning for differentiation */
-    color: var(--text-main);
 }
