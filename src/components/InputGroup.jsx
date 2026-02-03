@@ -1,27 +1,80 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './InputGroup.css';
 
 export default function InputGroup({ label, value, onChange, prefix = '$', suffix = '', min, max, step = 1, type = 'number', description }) {
   const [showInfo, setShowInfo] = useState(false);
+  // Internal state for the input string to handle formatting (e.g. "1,000")
+  const [displayValue, setDisplayValue] = useState('');
   const inputRef = useRef(null);
 
+  // Formatting helpers
+  const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) return '';
+    // Convert to string and split by decimal to handle integer part commas
+    const parts = num.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  };
+
+  const removeCommas = (str) => {
+    return str.replace(/,/g, '');
+  };
+
+  // Sync internal state with prop value when prop changes externally
+  // We compare the numeric values to avoid overriding user typing state e.g. "10."
+  useEffect(() => {
+    const numericInternal = parseFloat(removeCommas(displayValue));
+    // If the prop value is different from our current internal numeric value, update internal
+    // This happens on initial load or if parent changes it (e.g. calculation reset)
+    if (value !== numericInternal) {
+      if (value === 0 && (!displayValue || displayValue === '0')) {
+          setDisplayValue(''); // Keep clean for empty start
+      } else {
+        setDisplayValue(formatNumber(value));
+      }
+    }
+  }, [value]); // Only depend on value
+
   const handleInputChange = (e) => {
-    // specific handling to avoid NaN on empty input
-    const textVal = e.target.value;
-    if (textVal === '') {
-        // Handle empty string as needed, maybe pass 0 or keep internal state? 
-        // For now, let's pass 0 to keep the calculator working, 
-        // essentially treating empty as 0.
-        // A better approach for "controlled" inputs is often to separate the display value from the number value,
-        // but for this MVP, treating empty as 0 is safest for the math formulas.
-        onChange(0);
+    const rawVal = e.target.value;
+    
+    // Allow digits, commas, and one decimal point
+    if (!/^[0-9,]*\.?[0-9]*$/.test(rawVal)) {
         return;
     }
+
+    const cleanVal = removeCommas(rawVal);
     
-    const val = parseFloat(textVal);
-    if (!isNaN(val)) {
-      onChange(val);
+    // Update internal display state appropriately
+    // We want to format the integer part, but leave trailing dots/zeros alone so user can type
+    const parts = cleanVal.split('.');
+    const formattedInt = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    
+    let newDisplayVal = formattedInt;
+    if (parts.length > 1) {
+        newDisplayVal += '.' + parts[1];
+    } else if (rawVal.endsWith('.')) {
+        newDisplayVal += '.';
     }
+
+    setDisplayValue(newDisplayVal);
+
+    // Pass numeric value to parent
+    if (cleanVal === '' || cleanVal === '.') {
+        onChange(0);
+    } else {
+        const numVal = parseFloat(cleanVal);
+        if (!isNaN(numVal)) {
+            onChange(numVal);
+        }
+    }
+  };
+  
+  const handleBlur = () => {
+      // On blur, enforce strict formatting of the current numeric value
+      if (value !== 0 || displayValue !== '') {
+          setDisplayValue(formatNumber(value));
+      }
   };
   
   const handleFocus = (e) => {
@@ -63,14 +116,15 @@ export default function InputGroup({ label, value, onChange, prefix = '$', suffi
         {prefix && <span className="prefix">{prefix}</span>}
         <input
             ref={inputRef}
-            type="number"
+            type="text" 
             inputMode="decimal" 
-            pattern="[0-9]*"
-            value={value === 0 ? '' : value} /* Display empty if 0 for easier typing? Or stick to value. Let's stick to value but select on focus */
+            value={displayValue}
             onChange={handleInputChange}
+            onBlur={handleBlur}
             onFocus={handleFocus}
             className="big-input"
             placeholder="0"
+            autoComplete="off"
         />
         {suffix && <span className="suffix">{suffix}</span>}
       </div>
