@@ -113,3 +113,37 @@
 .amount.negative {
     color: var(--error-color);
 }
+
+.investment-metrics {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.metric-row .label {
+    color: var(--text-secondary);
+}
+
+.metric-row .amount {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.metric-note {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    text-align: right;
+    font-style: italic;
+    margin-top: -4px;
+}

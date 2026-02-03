@@ -41,12 +41,24 @@ export default function Calculator() {
         const netIncome = rentalIncome - totalDebtService;
         const dscr = totalDebtService > 0 ? rentalIncome / totalDebtService : 0;
 
+        // Investment Metrics
+        const moneyStuck = downPayment; // Total Invested (Cost + Rehab - Loan)
+        const adjustedCashflow = netIncome - (rentalIncome * 0.10); // Net Income - 10% buffer
+        
+        let paybackMonths = 0;
+        if (adjustedCashflow > 0) {
+            paybackMonths = moneyStuck / adjustedCashflow;
+        } else {
+            paybackMonths = Infinity;
+        }
+
         return {
             dscr,
             totalDebtService,
             netIncome,
             loanAmount,
-            totalInvested: downPayment,
+            totalInvested: moneyStuck,
+            paybackMonths,
             principalAndInterest: pmt,
             monthlyTaxes,
             monthlyInsurance,
@@ -65,6 +77,8 @@ export default function Calculator() {
                 monthlyTaxes={calculations.monthlyTaxes}
                 monthlyInsurance={calculations.monthlyInsurance}
                 extraExpenses={calculations.extraExpenses}
+                moneyStuck={calculations.totalInvested}
+                paybackMonths={calculations.paybackMonths}
             />
             
             <div className="card">

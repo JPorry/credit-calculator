@@ -9,7 +9,9 @@ export default function ResultCard({
     principalAndInterest, 
     monthlyTaxes, 
     monthlyInsurance,
-    extraExpenses 
+    extraExpenses,
+    moneyStuck = 0,
+    paybackMonths = 0
 }) {
     let statusColor = 'var(--text-secondary)';
     let statusText = 'Neutral';
@@ -26,6 +28,21 @@ export default function ResultCard({
     }
 
     const formatCurrency = (val) => '$' + val.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    
+    // Format payback time
+    let paybackDisplay = 'Never';
+    if (paybackMonths !== Infinity && paybackMonths > 0) {
+        if (paybackMonths < 12) {
+            paybackDisplay = `${paybackMonths.toFixed(1)} Months`;
+        } else {
+            const years = paybackMonths / 12;
+            paybackDisplay = `${years.toFixed(1)} Years`;
+        }
+    } else if (paybackMonths <= 0 && moneyStuck > 0) {
+        paybackDisplay = 'Never (Negative Cashflow)';
+    } else if (moneyStuck <= 0) {
+        paybackDisplay = 'Immediate (No Money Stuck)';
+    }
 
     return (
         <div className="card result-card" style={{borderColor: statusColor}}>
@@ -55,6 +72,21 @@ export default function ResultCard({
                     <span className={`amount ${netIncome >= 0 ? 'positive' : 'negative'}`}>
                         {netIncome >= 0 ? '+' : ''}{formatCurrency(netIncome)}
                     </span>
+                </div>
+
+                {/* Investment Recovery Section */}
+                <div className="investment-metrics">
+                    <div className="metric-row">
+                        <span className="label">Money Stuck</span>
+                        <span className="amount">{formatCurrency(moneyStuck)}</span>
+                    </div>
+                    {moneyStuck > 0 && (
+                        <div className="metric-row">
+                            <span className="label">Time to Recapture*</span>
+                            <span className="amount">{paybackDisplay}</span>
+                        </div>
+                    )}
+                    {moneyStuck > 0 && <div className="metric-note">*Includes 10% income buffer</div>}
                 </div>
             </div>
         </div>
