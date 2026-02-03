@@ -20,7 +20,7 @@ export default function Calculator() {
     // Calculations
     const calculations = useMemo(() => {
         const totalCost = propertyCost + rehabCost;
-        const loanAmount = totalCost * (ltv / 100);
+        const loanAmount = arv * (ltv / 100);
         const downPayment = totalCost - loanAmount;
         
         // Mortgage PMT (Principal + Interest)
@@ -109,7 +109,7 @@ export default function Calculator() {
                     step={5} 
                     prefix="" 
                     suffix="%" 
-                    description="Loan-to-Value ratio. Percentage of the total cost (Purchase + Rehab) financed."
+                    description="Loan-to-Value ratio. Percentage of the ARV financed."
                 />
                 <InputGroup 
                     label="Interest Rate (%)" 
