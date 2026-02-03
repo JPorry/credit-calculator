@@ -1,20 +1,21 @@
 import React, { useState, useMemo } from 'react';
+import useLocalStorage from '../hooks/useLocalStorage';
 import InputGroup from './InputGroup';
 import ResultCard from './ResultCard';
 
 export default function Calculator() {
     // State
-    const [propertyCost, setPropertyCost] = useState(200000);
-    const [rehabCost, setRehabCost] = useState(50000);
-    const [arv, setArv] = useState(350000); // Default ARV
+    const [propertyCost, setPropertyCost] = useLocalStorage('dscr_propertyCost', 200000);
+    const [rehabCost, setRehabCost] = useLocalStorage('dscr_rehabCost', 50000);
+    const [arv, setArv] = useLocalStorage('dscr_arv', 350000); // Default ARV
     
-    const [interestRate, setInterestRate] = useState(6.75);
-    const [ltv, setLtv] = useState(75); // Loan to Value %
+    const [interestRate, setInterestRate] = useLocalStorage('dscr_interestRate', 6.75);
+    const [ltv, setLtv] = useLocalStorage('dscr_ltv', 75); // Loan to Value %
     
-    const [rentalIncome, setRentalIncome] = useState(2500);
-    const [taxes, setTaxes] = useState(3000); // Annual
-    const [insurance, setInsurance] = useState(1200); // Annual
-    const [extraExpenses, setExtraExpenses] = useState(0); // Monthly
+    const [rentalIncome, setRentalIncome] = useLocalStorage('dscr_rentalIncome', 2500);
+    const [taxes, setTaxes] = useLocalStorage('dscr_taxes', 3000); // Annual
+    const [insurance, setInsurance] = useLocalStorage('dscr_insurance', 1200); // Annual
+    const [extraExpenses, setExtraExpenses] = useLocalStorage('dscr_extraExpenses', 0); // Monthly
 
     // Calculations
     const calculations = useMemo(() => {
